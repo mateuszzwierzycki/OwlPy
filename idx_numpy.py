@@ -1,6 +1,5 @@
 """Supports all the IDX data types specified in the MNIST website description"""
 
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -15,9 +14,8 @@ def _read32(bytestream):
 
 def _write32(bytestream, value32):
     dt = numpy.dtype(numpy.uint32).newbyteorder('>')
-    arr = numpy.fromiter([value32],dt)
+    arr = numpy.fromiter([value32], dt)
     bytestream.write(arr.tobytes())
-
 
 def save_idx(f, numpy_array):
     with open(f, 'wb') as bytestream:
@@ -26,6 +24,8 @@ def save_idx(f, numpy_array):
         bytestream.write(bytes([0]))
         bytestream.write(bytes([0]))
 
+        swap_bytes = False
+
         if numpy_array.dtype.str == numpy.dtype(numpy.uint8).newbyteorder(">").str: bytestream.write(bytes([8]))
         if numpy_array.dtype.str == numpy.dtype(numpy.int8).newbyteorder(">").str: bytestream.write(bytes([9]))
         if numpy_array.dtype.str == numpy.dtype(numpy.int16).newbyteorder(">").str: bytestream.write(bytes([11]))
@@ -33,13 +33,36 @@ def save_idx(f, numpy_array):
         if numpy_array.dtype.str == numpy.dtype(numpy.float32).newbyteorder(">").str: bytestream.write(bytes([13]))
         if numpy_array.dtype.str == numpy.dtype(numpy.float64).newbyteorder(">").str: bytestream.write(bytes([14]))
 
+        if numpy_array.dtype.str == numpy.dtype(numpy.uint8).str:
+            bytestream.write(bytes([8]))
+            swap_bytes = True
+        if numpy_array.dtype.str == numpy.dtype(numpy.int8).str:
+            bytestream.write(bytes([9]))
+            swap_bytes = True
+        if numpy_array.dtype.str == numpy.dtype(numpy.int16).str:
+            bytestream.write(bytes([11]))
+            swap_bytes = True
+        if numpy_array.dtype.str == numpy.dtype(numpy.int32).str:
+            bytestream.write(bytes([12]))
+            swap_bytes = True
+        if numpy_array.dtype.str == numpy.dtype(numpy.float32).str:
+            bytestream.write(bytes([13]))
+            swap_bytes = True
+        if numpy_array.dtype.str == numpy.dtype(numpy.float64).str:
+            bytestream.write(bytes([14]))
+            swap_bytes = True
+
         bytestream.write(bytes([len(numpy_array.shape)]))
 
-        #shape
+        # shape
         for val in numpy_array.shape:
-            _write32(bytestream,val)
+            _write32(bytestream, val)
 
-        bytestream.write(numpy_array.tobytes())
+        if swap_bytes:
+            revd = numpy_array.byteswap(False)
+            bytestream.write(revd.tobytes())
+        else:
+            bytestream.write(numpy_array.tobytes())
 
 
 def load_idx(f):
