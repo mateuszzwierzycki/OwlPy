@@ -8,12 +8,12 @@ import numpy
 
 
 def _read32(bytestream):
-    dt = numpy.dtype(numpy.uint32).newbyteorder('>')
+    dt = numpy.dtype(numpy.int32).newbyteorder('>')
     return numpy.frombuffer(bytestream.read(4), dtype=dt)[0]
 
 
 def _write32(bytestream, value32):
-    dt = numpy.dtype(numpy.uint32).newbyteorder('>')
+    dt = numpy.dtype(numpy.int32).newbyteorder('>')
     arr = numpy.fromiter([value32], dt)
     bytestream.write(arr.tobytes())
 

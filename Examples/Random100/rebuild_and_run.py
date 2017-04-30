@@ -1,8 +1,15 @@
-import tensorflow as tf
-import idx_numpy as idx
 import numpy as np
-import TensorSet as Owl
+import tensorflow as tf
 
+import TensorSet as Owl
+import communication_utils as comm
+import idx_numpy as idx
+
+# Functions to override the default log. Silence the console and print only interesting stuff.
+comm.set_tf_message_level(comm.MessageLevel.ERROR)
+print(comm.get_available_gpus())
+
+# File paths
 query_file = "C:/Users/Mateusz/PycharmProjects/OwlPy/Examples/Random100/Data/Random100_Query.idx"
 prediction_file = "C:/Users/Mateusz/PycharmProjects/OwlPy/Examples/Random100/Data/Random100_Results_PreTrained.idx"
 model_path = "C:/Users/Mateusz/PycharmProjects/OwlPy/Examples/Random100/Model/model"
@@ -19,11 +26,13 @@ def load_full_graph(path):
     with sess.graph.as_default():
         saver = tf.train.import_meta_graph(path + '.meta')
         saver.restore(sess, path)
+        print("Initialized the graph with " + str(len(sess.graph.get_operations())) + " ops.")
     return sess
 
 
 def run_eval():
     with load_full_graph(model_path) as sess:
+        # print(comm.get_available_gpus())
         eval_batch = tens_eval.next_batch(eval_samples)
 
         x = sess.graph.get_tensor_by_name(name="var_x:0")
@@ -34,5 +43,6 @@ def run_eval():
         prediction_save = np.asarray(prediction_save)
         prediction_save = prediction_save.reshape(eval_grid.shape[0], 1)
         idx.save_idx(prediction_file, prediction_save)
+
 
 run_eval()
