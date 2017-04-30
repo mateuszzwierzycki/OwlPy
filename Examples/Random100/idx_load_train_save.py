@@ -1,9 +1,9 @@
-import tensorflow as tf
-import idx_numpy as idx
 import numpy as np
-import TensorSet as Owl
-
+import tensorflow as tf
 from tensorflow.python.framework import dtypes
+
+import TensorSet as Owl
+import idx_numpy as idx
 
 # file paths
 inputs_file = "./Data/Random100_Inputs.idx"
@@ -86,13 +86,9 @@ def train_network(data):
 
             if epoch % 30 == 0: print("Epoch loss:", loss, " Epoch:", int(epoch))
 
-        # # save the model
-        # saver = tf.train.Saver()
-        # saver.save(sess, model_file, global_step=0)
-
         with sess.graph.as_default():
             saver = tf.train.Saver()
-            saver.save(sess, model_file, meta_graph_suffix='meta', write_meta_graph=True)
+            saver.save(sess, model_file)
 
         # getting the network to work, it should be already trained
         eval_batch = tens_eval.next_batch(eval_samples)
