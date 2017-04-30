@@ -5,12 +5,19 @@ import TensorSet as Owl
 
 from tensorflow.python.framework import dtypes
 
+# file paths
+inputs_file = "./Data/Random100_Inputs.idx"
+outputs_file = "./Data/Random100_Outputs.idx"
+query_file = "./Data/Random100_Query.idx"
+prediction_file = "./Data/Random100_Results.idx"
+model_file = "./Model/model"
+
 # import files, have to have the same data type (float32/single int8/byte etc.)
-rnd_in = idx.load_idx("Examples/Random100_Inputs.idx")
-rnd_out = idx.load_idx("Examples/Random100_Outputs.idx")
+rnd_in = idx.load_idx(inputs_file)
+rnd_out = idx.load_idx(outputs_file)
 
 # this is a file which will be used as the input array for the evaluation after training
-eval_grid = idx.load_idx("Examples/Random100_Query.idx")
+eval_grid = idx.load_idx(query_file)
 tens_eval = Owl.TensorSet(eval_grid, eval_grid.size / 2, 0, 0)
 eval_samples = int(eval_grid.size / 2)
 
@@ -37,7 +44,7 @@ n_outputs = int(rnd_out.size / rnd_out.shape[0])  # will resize the network auto
 batch_size = 10
 
 # placeholders for the data
-x = tf.placeholder(dt, [None, n_inputs])
+x = tf.placeholder(dt, [None, n_inputs], name="var_x")
 y = tf.placeholder(dt, [None, n_outputs])
 
 
@@ -54,7 +61,7 @@ def network_model(data):
 
     l1 = tf.nn.sigmoid(tf.add(tf.matmul(data, h1['weights']), h1['biases']))
     l2 = tf.nn.sigmoid(tf.add(tf.matmul(l1, h2['weights']), h2['biases']))
-    lo = tf.nn.sigmoid(tf.add(tf.matmul(l2, lout['weights']), lout['biases']))
+    lo = tf.nn.sigmoid(tf.add(tf.matmul(l2, lout['weights']), lout['biases']), name="prediction")
 
     return lo
 
@@ -79,6 +86,14 @@ def train_network(data):
 
             if epoch % 30 == 0: print("Epoch loss:", loss, " Epoch:", int(epoch))
 
+        # # save the model
+        # saver = tf.train.Saver()
+        # saver.save(sess, model_file, global_step=0)
+
+        with sess.graph.as_default():
+            saver = tf.train.Saver()
+            saver.save(sess, model_file, meta_graph_suffix='meta', write_meta_graph=True)
+
         # getting the network to work, it should be already trained
         eval_batch = tens_eval.next_batch(eval_samples)
 
@@ -87,7 +102,7 @@ def train_network(data):
         prediction_save = prediction_save.reshape(eval_grid.shape[0], 1)
 
         # open this file and compare it with the training data outputs
-        idx.save_idx("C:/Users/Mateusz/Desktop/TrainingResults.idx", prediction_save)
+        idx.save_idx(prediction_file, prediction_save)
 
 
 train_network(x)
