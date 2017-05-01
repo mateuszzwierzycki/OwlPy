@@ -1,29 +1,34 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import numpy as np
 import tensorflow as tf
 from tensorflow.python.framework import dtypes
 
-import TensorSet as Owl
-import idx_numpy as idx
+import owl_py as owl
+import owl_py.idx_numpy as idx
+import owl_py.owl_data_types as types
 
 # file paths
-inputs_file = "./Data/Random100_Inputs.idx"
-outputs_file = "./Data/Random100_Outputs.idx"
-query_file = "./Data/Random100_Query.idx"
-prediction_file = "./Data/Random100_Results.idx"
-model_file = "./Model/model"
+inputs_file = "./Examples/Random100/Data/Random100_Inputs.idx"
+outputs_file = "./Examples/Random100/Data/Random100_Outputs.idx"
+query_file = "./Examples/Random100/Data/Random100_Query.idx"
+prediction_file = "./Examples/Random100/Data/Random100_Results.idx"
+model_file = "./Examples/Random100/Model/model"
 
 # import files, have to have the same data type (float32/single int8/byte etc.)
-rnd_in = idx.load_idx(inputs_file)
-rnd_out = idx.load_idx(outputs_file)
+rnd_in = owl.idx_numpy.load_idx(inputs_file)
+rnd_out = owl.idx_numpy.load_idx(outputs_file)
 
 # this is a file which will be used as the input array for the evaluation after training
 eval_grid = idx.load_idx(query_file)
-tens_eval = Owl.TensorSet(eval_grid, eval_grid.size / 2, 0, 0)
+tens_eval = types.TensorSet(eval_grid, eval_grid.size / 2, 0, 0)
 eval_samples = int(eval_grid.size / 2)
 
 # construct TensorSets for easier training (it's a very crude class right now)
-tens_in = Owl.TensorSet(rnd_in, 80, 10, 10)  # note those tensorsets are not the same as the ones in the .net libs
-tens_out = Owl.TensorSet(rnd_out, 80, 10, 10)  # note those tensorsets are not the same as the ones in the .net libs
+tens_in = types.TensorSet(rnd_in, 80, 10, 10)  # note those tensorsets are not the same as the ones in the .net libs
+tens_out = types.TensorSet(rnd_out, 80, 10, 10)  # note those tensorsets are not the same as the ones in the .net libs
 
 # get the type of data for the tensorflow code to work with
 # those complex comparisons come from the numpy data type handling... not my fault.

@@ -1,13 +1,22 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+import sys
+
+sys.path.append('C:/Users/Mateusz/PycharmProjects/OwlPy')
+
+
 import numpy as np
 import tensorflow as tf
 
-import TensorSet as Owl
-import communication_utils as comm
-import idx_numpy as idx
+# import communication_utils as comm
+from owl_py import idx_numpy as idx
+from owl_py import owl_data_types as owl
 
-# Functions to override the default log. Silence the console and print only interesting stuff.
-comm.set_tf_message_level(comm.MessageLevel.ERROR)
-print(comm.get_available_gpus())
+# # Functions to override the default log. Silence the console and print only interesting stuff.
+# comm.set_tf_message_level(comm.MessageLevel.ERROR)
+# print(comm.get_available_gpus())
 
 # File paths
 query_file = "C:/Users/Mateusz/PycharmProjects/OwlPy/Examples/Random100/Data/Random100_Query.idx"
@@ -16,7 +25,7 @@ model_path = "C:/Users/Mateusz/PycharmProjects/OwlPy/Examples/Random100/Model/mo
 
 # this is a file which will be used as the input array for the evaluation after training
 eval_grid = idx.load_idx(query_file)
-tens_eval = Owl.TensorSet(eval_grid, eval_grid.size / 2, 0, 0)
+tens_eval = owl.TensorSet(eval_grid, eval_grid.size / 2, 0, 0)
 eval_samples = int(eval_grid.size / 2)
 
 

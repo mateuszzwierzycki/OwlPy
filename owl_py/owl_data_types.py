@@ -1,5 +1,11 @@
 """A TensorSet class for organizing the data sets into parts"""
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import numpy as np
+
 
 class TensorSet:
     def __init__(self, numpy_array, train, test, validate):
