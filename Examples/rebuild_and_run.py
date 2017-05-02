@@ -2,24 +2,24 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import sys
-
 import numpy as np
 import tensorflow as tf
 
-sys.path.append('C:/Users/Mateusz/PycharmProjects/OwlPy')
-
+from owl_py import communication_utils as comm
 from owl_py import idx_numpy as idx
-from owl_py import owl_data_types as owl
+from owl_py import owl_data_types as types
+
+# silence the non important messages from the tensorflow
+comm.set_tf_message_level(comm.MessageLevel.ERROR)
 
 # File paths
-query_file = "C:/Users/Mateusz/PycharmProjects/OwlPy/Examples/Random100/Data/Random100_Query.idx"
-prediction_file = "C:/Users/Mateusz/PycharmProjects/OwlPy/Examples/Random100/Data/Random100_Results_PreTrained.idx"
-model_path = "C:/Users/Mateusz/PycharmProjects/OwlPy/Examples/Random100/Model/model"
+query_file = "./Random100/Data/Random100_Query.idx"
+prediction_file = "./Random100/Data/Random100_Results_PreTrained.idx"
+model_path = "./Random100/Model/model"
 
 # this is a file which will be used as the input array for the evaluation after training
 eval_grid = idx.load_idx(query_file)
-tens_eval = owl.TensorSet(eval_grid, eval_grid.size / 2, 0, 0)
+tens_eval = types.TensorSet(eval_grid, eval_grid.size / 2, 0, 0)
 eval_samples = int(eval_grid.size / 2)
 print("Loaded the query batch from " + query_file)
 
