@@ -47,7 +47,7 @@ class TensorSet:
             index = int((self._current_train + i + self.train) % self.train)
             this_batch.append(self.tensors[index])
 
-        self._seed = random.randint(0, 10000)
+        self._seed = random.randint(1, 10000000)
         if shuffle_seed == -1: shuffle_seed = self._seed
 
         random.seed(shuffle_seed)
