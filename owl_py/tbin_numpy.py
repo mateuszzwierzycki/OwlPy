@@ -128,7 +128,7 @@ def load_tbin(f):
             arrays.append(from_tbin(bytestream.read(tot_len), False))
 
 
-def save_multiple_tbin(f, numpy_arrays, stack):
+def save_multiple_tbin(f, numpy_arrays, stack=False):
     if stack:
         save_tbin(f, numpy.vstack(numpy_arrays))
     else:

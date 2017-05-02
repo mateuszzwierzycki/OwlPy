@@ -61,14 +61,14 @@ y = tf.placeholder(dt, [None, n_outputs], name="var_y")
 
 # basically tensorflow network is a bunch of arrays
 def network_model(data):
-    h1 = {'weights': tf.Variable(tf.random_normal(shape=[n_inputs, n_nodes_hl1])),
-          'biases': tf.Variable(tf.random_normal(shape=[n_nodes_hl1]))}
+    h1 = {'weights': tf.Variable(tf.random_normal(shape=[n_inputs, n_nodes_hl1]), name="h1_w"),
+          'biases': tf.Variable(tf.random_normal(shape=[n_nodes_hl1]), name="h1_b")}
 
-    h2 = {'weights': tf.Variable(tf.random_normal(shape=[n_nodes_hl1, n_nodes_hl2])),
-          'biases': tf.Variable(tf.random_normal(shape=[n_nodes_hl2]))}
+    h2 = {'weights': tf.Variable(tf.random_normal(shape=[n_nodes_hl1, n_nodes_hl2]), name="h2_w"),
+          'biases': tf.Variable(tf.random_normal(shape=[n_nodes_hl2]), name="h2_b")}
 
-    lout = {'weights': tf.Variable(tf.random_normal(shape=[n_nodes_hl2, n_outputs])),
-            'biases': tf.Variable(tf.random_normal(shape=[n_outputs]))}
+    lout = {'weights': tf.Variable(tf.random_normal(shape=[n_nodes_hl2, n_outputs]), name="lout_w"),
+            'biases': tf.Variable(tf.random_normal(shape=[n_outputs]), name="lout_b")}
 
     l1 = tf.nn.sigmoid(tf.add(tf.matmul(data, h1['weights']), h1['biases']))
     l2 = tf.nn.sigmoid(tf.add(tf.matmul(l1, h2['weights']), h2['biases']))
