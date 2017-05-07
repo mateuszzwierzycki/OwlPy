@@ -2,9 +2,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import sys
+
 import numpy as np
 import tensorflow as tf
 from tensorflow.python.framework import dtypes
+
+sys.path.insert(0, "C:/Users/Mateusz/PycharmProjects/OwlPy")
 
 import owl_py as owl
 import owl_py.idx_numpy as idx
@@ -15,11 +19,11 @@ from owl_py import communication_utils as comm
 comm.set_tf_message_level(comm.MessageLevel.ERROR)
 
 # file paths
-inputs_file = "./Random100/Data/Random100_Inputs.idx"
-outputs_file = "./Random100/Data/Random100_Outputs.idx"
-query_file = "./Random100/Data/Random100_Query.idx"
-prediction_file = "./Random100/Data/Random100_Results.idx"
-model_path = "./Random100/Model/model"
+inputs_file = "C:/Users/Mateusz/PycharmProjects/OwlPy/Examples/Random100/Data/Random100_Inputs.idx"
+outputs_file = "C:/Users/Mateusz/PycharmProjects/OwlPy/Examples/Random100/Data/Random100_Outputs.idx"
+query_file = "C:/Users/Mateusz/PycharmProjects/OwlPy/Examples/Random100/Data/Random100_Query.idx"
+prediction_file = "C:/Users/Mateusz/PycharmProjects/OwlPy/Examples/Random100/Data/Random100_Results.idx"
+model_path = "C:/Users/Mateusz/PycharmProjects/OwlPy/Examples/Random100/Model/model"
 
 # import files, have to have the same data type (float32/single int8/byte etc.)
 rnd_in = owl.idx_numpy.load_idx(inputs_file)
@@ -82,9 +86,10 @@ def train_network(data):
     cost = tf.reduce_mean(tf.square(prediction - y), name="cost")
     optimizer = tf.train.RMSPropOptimizer(0.01, name="optimizer").minimize(cost)
 
-    epochs = 300
+    epochs = 1000
 
-    print("Starting the session")
+    print("Starting the session", flush=True)
+
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         saver = tf.train.Saver()
@@ -97,10 +102,11 @@ def train_network(data):
                 batch, c = sess.run([optimizer, cost], feed_dict={x: epoch_x, y: epoch_y})
                 loss += c
 
-            if epoch % 30 == 0: print("Epoch " + str(epoch) + " loss:", loss)
+            if epoch % 30 == 0:
+                print("Epoch " + str(epoch) + " loss:", loss, flush=True)
 
         saver.save(sess, model_path)
-        print("Model with " + str(len(sess.graph.get_operations())) + " ops saved under " + model_path)
+        print("Model with " + str(len(sess.graph.get_operations())) + " ops saved under " + model_path, flush=True)
 
         # getting the network to work, it should be already trained
         eval_batch = tens_eval.next_batch(eval_samples)
@@ -114,4 +120,4 @@ def train_network(data):
 
 
 train_network(x)
-print("Done")
+# print("Done")

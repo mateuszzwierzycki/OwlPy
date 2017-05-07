@@ -1,2 +1,2 @@
-model_checkpoint_path: "model"
-all_model_checkpoint_paths: "model"
+model_checkpoint_path: "C:\\Users\\Mateusz\\PycharmProjects\\OwlPy\\Examples\\Random100\\Model\\gh_model"
+all_model_checkpoint_paths: "C:\\Users\\Mateusz\\PycharmProjects\\OwlPy\\Examples\\Random100\\Model\\gh_model"
